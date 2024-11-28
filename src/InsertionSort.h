@@ -2,9 +2,10 @@
 #include <vector>
 #include <algorithm>
 
-class InsertionSort {
+class InsertionSort
+{
 public:
-    static void sort(std::vector<int>& arr);
+    static void sort(std::vector<int> &arr);
 
 private:
     InsertionSort() = delete;

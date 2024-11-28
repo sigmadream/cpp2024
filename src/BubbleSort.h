@@ -2,9 +2,10 @@
 #include <vector>
 #include <algorithm>
 
-class BubbleSort {
+class BubbleSort
+{
 public:
-    static void sort(std::vector<int>& arr);
+    static void sort(std::vector<int> &arr);
 
 private:
     BubbleSort() = delete;
