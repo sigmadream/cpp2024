@@ -1,0 +1,49 @@
+project:
+  type: website
+  output-dir: docs
+  preview:
+    port: 3000
+    browser: false
+
+execute:
+  freeze: auto
+
+website:
+  title: "C++"
+  description: "Practice C++"
+  twitter-card: true
+  open-graph: true
+  page-navigation: true
+  reader-mode: true
+  # repo-branch: main
+  # repo-url: https://github.com/sigmadream/practice-cpp
+  # repo-actions: [issue]
+  navbar:
+    background: primary
+    search: true
+    right:
+      - icon: github
+        href: https://github.com/sigmadream/practice-cpp
+  sidebar:
+    style: "floating"
+
+metadata-files:
+  - sidebar.yml
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+  # typst:
+  #   mainfont: "IBM Plex Sans KR"
+  #   fontsize: 10pt
+  #   section-numbering: 1.A.a
+  pdf:
+    documentclass: article
+    code-overflow: wrap  
+    include-in-header:
+      text: |
+        \usepackage{kotex}
