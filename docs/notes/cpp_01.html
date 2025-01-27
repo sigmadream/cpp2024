@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Sangkon Han">
-<meta name="dcterms.date" content="2025-01-25">
+<meta name="dcterms.date" content="2025-01-26">
 <meta name="description" content="CMake를 사용하기 위한 첫 단계는 CMake를 설치하는 것입니다. 소스에서 빌드하거나 미리 컴파일된 바이너리를 다운로드하여 설치할 수 있습니다. 운영체제에 맞는 설치 방법을 선택해야 하며, 특히 소스에서 빌드하는 경우 Qt 설치가 필요할 수도 있습니다. CMake 프로젝트의 핵심은 CMakeLists.txt 파일을 작성하는 것입니다. 이 파일은 CMake에게 프로젝트를 어떻게 빌드해야 하는지에 대한 지침을 제공합니다. 자세한 사항은 아래에서 확인할 수 있습니다. CMake 빌드 프로세스는 구성(configuration) 단계와 빌드 단계의 두 단계로 이루어져 있습니다. 구성 단계는 cmake 명령을 사용하여 CMakeLists.txt 파일을 읽고 시스템의 빌드 도구 체인에 맞는 빌드 지침을 생성합니다. 이 과정에서 필요한 의존성이 해결되고, CMakeCache.txt 파일이 생성됩니다. 빌드 단계는 cmake --build 명령을 사용하여 실제 컴파일과 링크를 수행합니다. 이 단계에서는 구성 단계에서 생성된 빌드 지침을 바탕으로 실행 파일 또는 라이브러리를 빌드합니다. CMake는 명령 줄 도구이므로, CLI를 통해 CMake를 사용하는 방법을 배우는 것이 중요합니다. 실습을 통해서 CMake 사용법도 함께 알아보도록 하겠습니다.">
 
 <title>C++ 개발 환경 구성과 CMake – C++</title>
@@ -180,7 +180,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#기본적인-cmake-사용법-및-cli를-통한-cmake-이해" id="toc-기본적인-cmake-사용법-및-cli를-통한-cmake-이해" class="nav-link active" data-scroll-target="#기본적인-cmake-사용법-및-cli를-통한-cmake-이해">기본적인 CMake 사용법 및 CLI를 통한 CMake 이해</a>
   <ul class="collapse">
   <li><a href="#간단한-c-프로젝트" id="toc-간단한-c-프로젝트" class="nav-link" data-scroll-target="#간단한-c-프로젝트">간단한 C++ 프로젝트</a></li>
-  <li><a href="#정적-라이브러리" id="toc-정적-라이브러리" class="nav-link" data-scroll-target="#정적-라이브러리">정적 라이브러리</a></li>
+  <li><a href="#라이브러리를-포함한-프로젝트" id="toc-라이브러리를-포함한-프로젝트" class="nav-link" data-scroll-target="#라이브러리를-포함한-프로젝트">라이브러리를 포함한 프로젝트</a></li>
   <li><a href="#빌드-및-실행-1" id="toc-빌드-및-실행-1" class="nav-link" data-scroll-target="#빌드-및-실행-1">빌드 및 실행</a></li>
   </ul></li>
   </ul>
@@ -217,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 25, 2025</p>
+      <p class="date">January 26, 2025</p>
     </div>
   </div>
   
@@ -248,10 +248,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>이 파일은 표준 출력 스트림을 사용하여 “Hello, World!”를 출력하는 간단한 C++ 프로그램입니다.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">"Hello, World!"</span> <span class="op">&lt;&lt;</span> <span class="bu">std::</span>endl<span class="op">;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">std::</span>cout <span class="op">&lt;&lt;</span> <span class="st">"Hello, World!"</span> <span class="op">&lt;&lt;</span> <span class="bu">std::</span>endl<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
 <li><p><code>CMakeLists.txt</code> 파일</p>
 <ul>
@@ -282,7 +283,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>CMake 구성, 상위 디렉토리(<code>..</code>)에 있는 <code>CMakeLists.txt</code> 파일을 사용하여 빌드 시스템을 구성합니다.</li>
 </ul>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cmake</span> ..</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cmake</span> ..</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
 <li>프로젝트 빌드, 현재 디렉토리(<code>.</code>)에 있는 빌드 파일을 사용하여 프로젝트를 빌드합니다. 이 명령어는 실제 컴파일 및 링크 과정을 수행합니다.</li>
 </ul>
@@ -290,17 +291,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>실행 파일 실행, <code>build</code> 디렉토리 안에 생성된 <code>hello_world</code> 실행 파일을 실행합니다.</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>  <span class="ex">./hello_world</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./hello_world</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
-<section id="정적-라이브러리" class="level3">
-<h3 class="anchored" data-anchor-id="정적-라이브러리">정적 라이브러리</h3>
+<section id="라이브러리를-포함한-프로젝트" class="level3">
+<h3 class="anchored" data-anchor-id="라이브러리를-포함한-프로젝트">라이브러리를 포함한 프로젝트</h3>
 <pre><code>/
 ├── CMakeLists.txt
 ├── staticlib/
 │   ├── CMakeLists.txt
 │   ├── include/
-│   │   └── lib/
+│   │   └── staticlib/
 │   │       └── add.h
 │   └── src/
 │       └── add.cpp
@@ -308,9 +309,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 │   ├── CMakeLists.txt
 │   ├── include/
 │   │   └── sharedlib/
-│   │       └── sharedlib.h
+│   │       └── multiply.h
 │   └── src/
-│       └── sharedlib.cpp
+│       └── multiply.cpp
 └── app/
     ├── CMakeLists.txt
     └── src/
@@ -318,59 +319,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="정적-라이브러리-소스-파일" class="level4">
 <h4 class="anchored" data-anchor-id="정적-라이브러리-소스-파일">정적 라이브러리 소스 파일</h4>
 <ul>
-<li><code>lib/src/add.cpp</code></li>
+<li><code>staticlib/include/staticlib/add.h</code></li>
 </ul>
-<div class="sourceCode" id="cb8"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"lib/add.h"</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> add<span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">+</span> b<span class="op">;</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma once</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> add<span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li><code>lib/src/include/lib.h</code></li>
+<li><code>staticlib/src/add.cpp</code></li>
 </ul>
-<div class="sourceCode" id="cb9"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma once</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> add<span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"staticlib/add.h"</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> add<span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">+</span> b<span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li><p>dynamiclib/CMakeLists.txt</p>
+<li><p><code>staticlib/CMakeLists.txt</code></p>
 <ul>
 <li><code>add_library(staticlib STATIC src/add.cpp)</code>: <code>lib</code>라는 정적 라이브러리 타겟을 생성하고, 소스 파일 <code>src/add.cpp</code>를 연결합니다. <code>STATIC</code> 키워드는 정적 라이브러리를 의미합니다.</li>
 <li><code>target_include_directories(staticlib PUBLIC include)</code>: <code>lib</code> 타겟에 헤더 파일 검색 경로를 추가합니다. <code>PUBLIC</code> 키워드는 이 라이브러리를 사용하는 타겟도 이 경로를 사용할 수 있음을 의미합니다.</li>
 </ul></li>
 </ul>
 <div class="sourceCode" id="cb10"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">add_library</span>(<span class="bn">staticlib</span> <span class="ot">STATIC</span> src/add.cpp)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">target_include_directories</span>(<span class="bn">lib</span> <span class="ot">PUBLIC</span> include)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">target_include_directories</span>(<span class="bn">staticlib</span> <span class="ot">PUBLIC</span> include)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="공유-라이브러리-예제" class="level4">
 <h4 class="anchored" data-anchor-id="공유-라이브러리-예제">공유 라이브러리 예제</h4>
 <ul>
-<li>`sharedlib/src/sharedlib.cpp</li>
+<li>`sharedlib/src/multiply.cpp</li>
 </ul>
-<div class="sourceCode" id="cb11"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"sharedlib/sharedlib.h"</span></span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"sharedlib/multiply.h"</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> multiply<span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">*</span> b<span class="op">;</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li><code>sharedlib/include/sharedlib/sharedlib.h</code></li>
+<li><code>sharedlib/include/lib/multiply.h</code></li>
 </ul>
 <div class="sourceCode" id="cb12"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma once</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> multiply<span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li><p><code>sharedlib/CMakeLists.txt</code></p></li>
-<li><p><code>add_library(sharedlib SHARED src/sharedlib.cpp)</code>: <code>sharedlib</code>라는 공유 라이브러리 타겟을 생성하고, 소스 파일 <code>src/sharedlib.cpp</code>를 연결합니다. <code>SHARED</code> 키워드는 공유 라이브러리를 의미합니다.</p></li>
-<li><p><code>target_include_directories(sharedlib PUBLIC include)</code>: <code>sharedlib</code> 타겟에 헤더 파일 검색 경로를 추가합니다. <code>PUBLIC</code> 키워드는 이 라이브러리를 사용하는 타겟도 이 경로를 사용할 수 있음을 의미합니다.</p></li>
+<li><p><code>sharedlib/CMakeLists.txt</code></p>
+<ul>
+<li><code>add_library(sharedlib SHARED src/sharedlib.cpp)</code>: <code>sharedlib</code>라는 공유 라이브러리 타겟을 생성하고, 소스 파일 <code>src/sharedlib.cpp</code>를 연결합니다. <code>SHARED</code> 키워드는 공유 라이브러리를 의미합니다.</li>
+<li><code>target_include_directories(sharedlib PUBLIC include)</code>: <code>sharedlib</code> 타겟에 헤더 파일 검색 경로를 추가합니다. <code>PUBLIC</code> 키워드는 이 라이브러리를 사용하는 타겟도 이 경로를 사용할 수 있음을 의미합니다.</li>
+</ul></li>
 </ul>
-<div class="sourceCode" id="cb13"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">add_library</span>(<span class="bn">sharedlib</span> <span class="ot">SHARED</span> src/sharedlib.cpp)</span>
+<div class="sourceCode" id="cb13"><pre class="sourceCode cmake code-with-copy"><code class="sourceCode cmake"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">add_library</span>(<span class="bn">sharedlib</span> <span class="ot">SHARED</span> src/multiply.cpp)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">target_include_directories</span>(<span class="bn">sharedlib</span> <span class="ot">PUBLIC</span> include)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="실행-파일-예제" class="level4">
-<h4 class="anchored" data-anchor-id="실행-파일-예제">실행 파일 예제</h4>
+<section id="app-실행-파일" class="level4">
+<h4 class="anchored" data-anchor-id="app-실행-파일"><code>app</code> 실행 파일</h4>
 <ul>
 <li><code>app/src/main.cpp</code></li>
 </ul>
 <div class="sourceCode" id="cb14"><pre class="sourceCode cpp code-with-copy"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;iostream&gt;</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"lib/lib.h"</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"sharedlib/sharedlib.h"</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"staticlib/add.h"</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">"sharedlib/multiply.h"</span></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">()</span> <span class="op">{</span></span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> a <span class="op">=</span> <span class="dv">5</span><span class="op">,</span> b <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
@@ -392,15 +395,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">target_link_libraries</span>(<span class="bn">_app</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="ot">PRIVATE</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    lib</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    staticlib</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    sharedlib</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="kw">target_include_directories</span>(<span class="bn">_app</span></span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="ot">PRIVATE</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="dv">${CMAKE_CURRENT_SOURCE_DIR}</span>/../lib/include</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="dv">${CMAKE_CURRENT_SOURCE_DIR}</span>/../staticlib/include</span>
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="dv">${CMAKE_CURRENT_SOURCE_DIR}</span>/../sharedlib/include</span>
 <span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="main" class="level4">
+<h4 class="anchored" data-anchor-id="main"><code>main</code></h4>
 <ul>
 <li><p><code>CMakeLists.txt</code></p>
 <ul>
@@ -437,9 +443,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>실행 파일 실행:</li>
 </ul>
 <div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./app/_app</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<ol start="7" type="1">
+<ul>
 <li>실행 결과</li>
-</ol>
+</ul>
 <pre><code>Addition: 8
 Multiplication: 15</code></pre>
 

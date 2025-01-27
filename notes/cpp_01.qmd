@@ -33,9 +33,10 @@ CMake를 사용해서 실행 파일을 만드는 과정을 통해 CMake의 기�
 ```cpp
 #include <iostream>
 
-int main() {
-  std::cout << "Hello, World!" << std::endl;
-  return 0;
+int main()
+{
+    std::cout << "Hello, World!" << std::endl;
+    return 0;
 }
 ```
 
@@ -70,7 +71,7 @@ cd build
 ```
 - CMake 구성, 상위 디렉토리(`..`)에 있는 `CMakeLists.txt` 파일을 사용하여 빌드 시스템을 구성합니다.
 ```bash
-  cmake ..
+cmake ..
 ```
 
 - 프로젝트 빌드, 현재 디렉토리(`.`)에 있는 빌드 파일을 사용하여 프로젝트를 빌드합니다. 이 명령어는 실제 컴파일 및 링크 과정을 수행합니다.
@@ -80,10 +81,10 @@ cmake --build .
 
 - 실행 파일 실행, `build` 디렉토리 안에 생성된 `hello_world` 실행 파일을 실행합니다.
 ```bash
-  ./hello_world
+./hello_world
 ```
 
-### 정적 라이브러리
+### 라이브러리를 포함한 프로젝트
 
 ```
 /
@@ -91,7 +92,7 @@ cmake --build .
 ├── staticlib/
 │   ├── CMakeLists.txt
 │   ├── include/
-│   │   └── lib/
+│   │   └── staticlib/
 │   │       └── add.h
 │   └── src/
 │       └── add.cpp
@@ -99,9 +100,9 @@ cmake --build .
 │   ├── CMakeLists.txt
 │   ├── include/
 │   │   └── sharedlib/
-│   │       └── sharedlib.h
+│   │       └── multiply.h
 │   └── src/
-│       └── sharedlib.cpp
+│       └── multiply.cpp
 └── app/
     ├── CMakeLists.txt
     └── src/
@@ -110,46 +111,48 @@ cmake --build .
 
 #### 정적 라이브러리 소스 파일 
 
-- `lib/src/add.cpp`
-
-```cpp
-#include "lib/add.h"
-
-int add(int a, int b) {
-    return a + b;
-}
-```
-
-- `lib/src/include/lib.h`
+- `staticlib/include/staticlib/add.h`
 
 ```cpp
 #pragma once
 int add(int a, int b);
 ```
 
-- dynamiclib/CMakeLists.txt
+- `staticlib/src/add.cpp`
+
+```cpp
+#include "staticlib/add.h"
+
+int add(int a, int b) {
+    return a + b;
+}
+```
+
+- `staticlib/CMakeLists.txt`
 
   - `add_library(staticlib STATIC src/add.cpp)`: `lib`라는 정적 라이브러리 타겟을 생성하고, 소스 파일 `src/add.cpp`를 연결합니다. `STATIC` 키워드는 정적 라이브러리를 의미합니다.
   - `target_include_directories(staticlib PUBLIC include)`: `lib` 타겟에 헤더 파일 검색 경로를 추가합니다. `PUBLIC` 키워드는 이 라이브러리를 사용하는 타겟도 이 경로를 사용할 수 있음을 의미합니다.
 
+
 ```cmake
 add_library(staticlib STATIC src/add.cpp)
-target_include_directories(lib PUBLIC include)
+target_include_directories(staticlib PUBLIC include)
 ```
 
 #### 공유 라이브러리 예제
 
-- `sharedlib/src/sharedlib.cpp
+- `sharedlib/src/multiply.cpp
 
 ```cpp
-#include "sharedlib/sharedlib.h"
+#include "sharedlib/multiply.h"
 
 int multiply(int a, int b) {
     return a * b;
 }
 ```
 
-- `sharedlib/include/sharedlib/sharedlib.h`
+- `sharedlib/include/lib/multiply.h`
+
 ```cpp
 #pragma once
 int multiply(int a, int b);
@@ -157,21 +160,22 @@ int multiply(int a, int b);
 
 - `sharedlib/CMakeLists.txt`
 
-- `add_library(sharedlib SHARED src/sharedlib.cpp)`: `sharedlib`라는 공유 라이브러리 타겟을 생성하고, 소스 파일 `src/sharedlib.cpp`를 연결합니다. `SHARED` 키워드는 공유 라이브러리를 의미합니다.
-- `target_include_directories(sharedlib PUBLIC include)`: `sharedlib` 타겟에 헤더 파일 검색 경로를 추가합니다. `PUBLIC` 키워드는 이 라이브러리를 사용하는 타겟도 이 경로를 사용할 수 있음을 의미합니다.
+  - `add_library(sharedlib SHARED src/sharedlib.cpp)`: `sharedlib`라는 공유 라이브러리 타겟을 생성하고, 소스 파일 `src/sharedlib.cpp`를 연결합니다. `SHARED` 키워드는 공유 라이브러리를 의미합니다.
+  - `target_include_directories(sharedlib PUBLIC include)`: `sharedlib` 타겟에 헤더 파일 검색 경로를 추가합니다. `PUBLIC` 키워드는 이 라이브러리를 사용하는 타겟도 이 경로를 사용할 수 있음을 의미합니다.
 
 ```cmake
-add_library(sharedlib SHARED src/sharedlib.cpp)
+add_library(sharedlib SHARED src/multiply.cpp)
 target_include_directories(sharedlib PUBLIC include)
 ```
 
-#### 실행 파일 예제
+#### `app` 실행 파일
 
 - `app/src/main.cpp`
+
 ```cpp
 #include <iostream>
-#include "lib/lib.h"
-#include "sharedlib/sharedlib.h"
+#include "staticlib/add.h"
+#include "sharedlib/multiply.h"
 
 int main() {
     int a = 5, b = 3;
@@ -193,16 +197,18 @@ add_executable(_app src/main.cpp)
 
 target_link_libraries(_app
     PRIVATE
-    lib
+    staticlib
     sharedlib
 )
 
 target_include_directories(_app
     PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../lib/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../staticlib/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../sharedlib/include
 )
 ```
+
+#### `main`
 
 - `CMakeLists.txt`
 
@@ -219,6 +225,7 @@ add_subdirectory(lib)
 add_subdirectory(sharedlib)
 add_subdirectory(app)
 ```
+
 ### 빌드 및 실행
 
 - 빌드 디렉토리 생성
@@ -246,7 +253,7 @@ cmake --build .
 ./app/_app
 ```
 
-7. 실행 결과
+- 실행 결과
 
 ```
 Addition: 8
